@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file:///storage/Code/recyclerviewlistadapater/recyclerviewlistadapater.iml" filepath="/storage/Code/recyclerviewlistadapater/recyclerviewlistadapater.iml" />
+      <module fileurl="file:///storage/Code/recyclerviewlistadapater/recyclerviewlistadapter/recyclerviewlistadapter.iml" filepath="/storage/Code/recyclerviewlistadapater/recyclerviewlistadapter/recyclerviewlistadapter.iml" />
+      <module fileurl="file:///storage/Code/recyclerviewlistadapater/sample/sample.iml" filepath="/storage/Code/recyclerviewlistadapater/sample/sample.iml" />
+    </modules>
+  </component>
+</project>
