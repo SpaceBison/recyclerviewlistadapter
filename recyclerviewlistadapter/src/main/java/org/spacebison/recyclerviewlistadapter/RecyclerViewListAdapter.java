@@ -20,6 +20,16 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T,
     private OnItemClickListener<T, V> mOnItemClickListener;
     private OnItemLongClickListener<T, V> mOnItemLongClickListener;
 
+    /**
+     * Returns the element represented by the passed view holder.
+     *
+     * @param viewHolder view holder representing the element
+     * @return T the element represented by the view holder
+     */
+    public T get(V viewHolder) {
+        return mData.get(viewHolder.getAdapterPosition());
+    }
+
     public abstract V onCreateBindableViewHolder(ViewGroup parent, int viewType);
 
     @Override
@@ -65,7 +75,6 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T,
         mOnItemLongClickListener = onItemLongClickListener;
     }
 
-
     @Override
     public int size() {
         return mData.size();
@@ -84,7 +93,7 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T,
     @NonNull
     @Override
     public Iterator<T> iterator() {
-        throw new UnsupportedOperationException();
+        return listIterator();
     }
 
     @NonNull
@@ -194,16 +203,6 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T,
         return mData.get(i);
     }
 
-    /**
-     * Returns the element represented by the passed view holder.
-     *
-     * @param viewHolder view holder representing the element
-     * @return T the element represented by the view holder
-     */
-    public T get(V viewHolder) {
-        return mData.get(viewHolder.getAdapterPosition());
-    }
-
     @UiThread
     @Override
     public T set(int i, T t) {
@@ -239,18 +238,80 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T,
 
     @Override
     public ListIterator<T> listIterator() {
-        throw new UnsupportedOperationException();
+        return new AdapterIterator(mData.listIterator());
     }
 
     @NonNull
     @Override
     public ListIterator<T> listIterator(int i) {
-        throw new UnsupportedOperationException();
+        return new AdapterIterator(mData.listIterator(i));
     }
 
     @NonNull
     @Override
     public List<T> subList(int i, int i1) {
         return mData.subList(i, i1);
+    }
+
+    private class AdapterIterator implements ListIterator<T> {
+        private final ListIterator<T> mDelegate;
+        private int mCurrentIndex;
+
+        private AdapterIterator(ListIterator<T> delegate) {
+            mDelegate = delegate;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return mDelegate.hasNext();
+        }
+
+        @Override
+        public T next() {
+            mCurrentIndex = nextIndex();
+            return mDelegate.next();
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            mCurrentIndex = previousIndex();
+            return mDelegate.hasPrevious();
+        }
+
+        @Override
+        public T previous() {
+            return mDelegate.previous();
+        }
+
+        @Override
+        public int nextIndex() {
+            return mDelegate.nextIndex();
+        }
+
+        @Override
+        public int previousIndex() {
+            return mDelegate.previousIndex();
+        }
+
+        @UiThread
+        @Override
+        public void remove() {
+            mDelegate.remove();
+            notifyItemRemoved(mCurrentIndex);
+        }
+
+        @UiThread
+        @Override
+        public void set(T t) {
+            mDelegate.set(t);
+            notifyItemChanged(mCurrentIndex);
+        }
+
+        @UiThread
+        @Override
+        public void add(T t) {
+            mDelegate.add(t);
+            notifyItemInserted(mCurrentIndex);
+        }
     }
 }
