@@ -12,10 +12,12 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * Created by cmb on 12.12.16.
+ * An {@link RecyclerView.Adapter} representing a {@link List} of objects.
+ *
+ * @param <T> Type of objects being held in the list.
+ * @param <V> Type of the ViewHolder representing the items.
  */
-
-public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T, V>> extends RecyclerView.Adapter<V> implements List<T> {
+public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T>> extends RecyclerView.Adapter<V> implements List<T> {
     private final LinkedList<T> mData = new LinkedList<>();
     private OnItemClickListener<T, V> mOnItemClickListener;
     private OnItemLongClickListener<T, V> mOnItemLongClickListener;
@@ -30,27 +32,30 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T,
         return mData.get(viewHolder.getAdapterPosition());
     }
 
+    /**
+     * Creates an instance of a view holder. See {@link #onCreateViewHolder(ViewGroup, int)}.
+     *
+     * @param parent   The ViewGroup into which the new View will be added after it is bound to an adapter position.
+     * @param viewType The view type of the new View.
+     * @return A new BindableViewHolder that holds a View of the given view type.
+     */
     public abstract V onCreateBindableViewHolder(ViewGroup parent, int viewType);
 
     @Override
     public final V onCreateViewHolder(ViewGroup parent, int viewType) {
         final V holder = onCreateBindableViewHolder(parent, viewType);
 
-        holder.setOnClickListener(new BindableViewHolder.OnClickListener<T, V>() {
+        holder.setOnClickListener(new BindableViewHolder.OnClickListener<T>() {
             @Override
-            public void onViewHolderClick(V holder) {
+            public void onViewHolderClick(BindableViewHolder<T> holder) {
                 if (mOnItemClickListener != null) {
-                    mOnItemClickListener.onItemClick(RecyclerViewListAdapter.this, holder);
+                    mOnItemClickListener.onItemClick(RecyclerViewListAdapter.this, (V) holder);
                 }
             }
 
             @Override
-            public boolean onViewHolderLongClick(V holder) {
-                if (mOnItemLongClickListener != null) {
-                    return mOnItemLongClickListener.onItemLongClick(RecyclerViewListAdapter.this, holder);
-                } else {
-                    return false;
-                }
+            public boolean onViewHolderLongClick(BindableViewHolder<T> holder) {
+                return mOnItemLongClickListener != null && mOnItemLongClickListener.onItemLongClick(RecyclerViewListAdapter.this, (V) holder);
             }
         });
 
@@ -67,10 +72,20 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T,
         return size();
     }
 
+    /**
+     * Registers a callback that will be called when an item is clicked.
+     *
+     * @param onItemClickListener The callback.
+     */
     public void setOnItemClickListener(OnItemClickListener<T, V> onItemClickListener) {
         mOnItemClickListener = onItemClickListener;
     }
 
+    /**
+     * Registers a callback that will be called when an item is long clicked.
+     *
+     * @param onItemLongClickListener The callback.
+     */
     public void setOnItemLongClickListener(OnItemLongClickListener<T, V> onItemLongClickListener) {
         mOnItemLongClickListener = onItemLongClickListener;
     }
