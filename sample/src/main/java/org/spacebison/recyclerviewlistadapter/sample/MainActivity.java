@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import org.spacebison.recyclerviewlistadapter.OnItemClickListener;
@@ -14,26 +17,34 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private final Random mRandom = new Random();
+    private RecyclerView mRecyclerView;
+    private SampleRecyclerViewListAdapter mAdapter;
+    private LinearLayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        SampleRecyclerViewListAdapter adapter = new SampleRecyclerViewListAdapter();
-        recyclerView.setAdapter(adapter);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler);
 
-        adapter.setOnItemClickListener(new OnItemClickListener<Integer, SampleBindableViewHolder>() {
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mAdapter = new SampleRecyclerViewListAdapter();
+        mRecyclerView.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(new OnItemClickListener<Integer, SampleBindableViewHolder>() {
             @Override
             public void onItemClick(RecyclerViewListAdapter<Integer, SampleBindableViewHolder> adapter, SampleBindableViewHolder holder) {
                 Toast.makeText(getApplicationContext(), "Clicked " + holder.getText() + "; color: " + adapter.get(holder), Toast.LENGTH_LONG).show();
             }
         });
 
-        adapter.setOnItemLongClickListener(new OnItemLongClickListener<Integer, SampleBindableViewHolder>() {
+        mAdapter.setOnItemLongClickListener(new OnItemLongClickListener<Integer, SampleBindableViewHolder>() {
             @Override
             public boolean onItemLongClick(RecyclerViewListAdapter<Integer, SampleBindableViewHolder> adapter, SampleBindableViewHolder holder) {
                 Toast.makeText(getApplicationContext(), "Long clicked " + holder.getText() + "; color: " + adapter.get(holder), Toast.LENGTH_LONG).show();
@@ -42,8 +53,25 @@ public class MainActivity extends AppCompatActivity {
         });
 
         for (int i = 0; i < 30; ++i) {
-            adapter.add(0xff000000 + mRandom.nextInt(0xffffff));
+            mAdapter.add(0xff000000 + mRandom.nextInt(0xffffff));
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_swap:
+                mAdapter.swap(mLayoutManager.findFirstVisibleItemPosition(), mLayoutManager.findLastCompletelyVisibleItemPosition());
+                return true;
+
+            default:
+                return false;
+        }
+    }
 }

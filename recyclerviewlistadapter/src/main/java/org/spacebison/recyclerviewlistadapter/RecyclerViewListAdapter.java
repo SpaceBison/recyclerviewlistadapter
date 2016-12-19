@@ -268,6 +268,23 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T>
         return mData.subList(i, i1);
     }
 
+    @UiThread
+    public void swap(int i1, int i2) {
+        int first, second;
+        if (i1 < i2) {
+            first = i1;
+            second = i2;
+        } else {
+            first = i2;
+            second = i1;
+        }
+
+        mData.add(first, mData.remove(second));
+        mData.add(second, mData.remove(first + 1));
+        notifyItemChanged(first);
+        notifyItemChanged(second);
+    }
+
     private class AdapterIterator implements ListIterator<T> {
         private final ListIterator<T> mDelegate;
         private int mCurrentIndex;
@@ -330,3 +347,4 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T>
         }
     }
 }
+

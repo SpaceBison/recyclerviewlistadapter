@@ -22,5 +22,6 @@ android {
 dependencies {
     compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.android.support:design:25.0.1'
-    compile 'com.github.SpaceBison:recyclerviewlistadapter:0.3'
+    //compile 'com.github.SpaceBison:recyclerviewlistadapter:0.3'
+    compile project(':recyclerviewlistadapter')
 }
