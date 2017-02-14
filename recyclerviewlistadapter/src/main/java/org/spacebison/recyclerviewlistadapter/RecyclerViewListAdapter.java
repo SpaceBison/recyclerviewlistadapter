@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -283,6 +284,34 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T>
         mData.add(second, mData.remove(first + 1));
         notifyItemChanged(first);
         notifyItemChanged(second);
+    }
+
+    @UiThread
+    private void setItemsUpdateChanged(List<T> items) {
+        final int oldSize = mData.size();
+        final int newSize = items.size();
+        final int sizeDiff = newSize - oldSize;
+        int changed = Math.min(oldSize, newSize);
+
+        final HashSet<Integer> changedItems = new HashSet<>(changed);
+        for (int i = 0; i < changed; ++i) {
+            if (!mData.get(i).equals(items.get(i))) {
+                changedItems.add(i);
+            }
+        }
+
+        mData.clear();
+        mData.addAll(items);
+
+        if (sizeDiff >= 0) {
+            notifyItemRangeInserted(oldSize, sizeDiff);
+        } else {
+            notifyItemRangeRemoved(newSize, -sizeDiff);
+        }
+
+        for (Integer changedItem : changedItems) {
+            notifyItemChanged(changedItem);
+        }
     }
 
     private class AdapterIterator implements ListIterator<T> {
