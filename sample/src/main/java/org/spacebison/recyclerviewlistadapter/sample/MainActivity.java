@@ -1,23 +1,25 @@
 package org.spacebison.recyclerviewlistadapter.sample;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import org.spacebison.recyclerviewlistadapter.OnItemClickListener;
 import org.spacebison.recyclerviewlistadapter.OnItemLongClickListener;
 import org.spacebison.recyclerviewlistadapter.RecyclerViewListAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
+    public static final int MAX_ITEMS = 30;
     private final Random mRandom = new Random();
-    private RecyclerView mRecyclerView;
     private SampleRecyclerViewListAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
 
@@ -29,32 +31,45 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler);
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
 
         mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setLayoutManager(mLayoutManager);
 
         mAdapter = new SampleRecyclerViewListAdapter();
-        mRecyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(mAdapter);
 
         mAdapter.setOnItemClickListener(new OnItemClickListener<Integer, SampleBindableViewHolder>() {
             @Override
             public void onItemClick(RecyclerViewListAdapter<Integer, SampleBindableViewHolder> adapter, SampleBindableViewHolder holder) {
-                Toast.makeText(getApplicationContext(), "Clicked " + holder.getText() + "; color: " + adapter.get(holder), Toast.LENGTH_LONG).show();
+                Snackbar.make(recyclerView, "Clicked " + holder.getText() + "; color: " + adapter.get(holder), Snackbar.LENGTH_SHORT).show();
             }
         });
 
         mAdapter.setOnItemLongClickListener(new OnItemLongClickListener<Integer, SampleBindableViewHolder>() {
             @Override
             public boolean onItemLongClick(RecyclerViewListAdapter<Integer, SampleBindableViewHolder> adapter, SampleBindableViewHolder holder) {
-                Toast.makeText(getApplicationContext(), "Long clicked " + holder.getText() + "; color: " + adapter.get(holder), Toast.LENGTH_LONG).show();
+                Snackbar.make(recyclerView, "Long clicked " + holder.getText() + "; color: " + adapter.get(holder), Snackbar.LENGTH_SHORT).show();
                 return true;
             }
         });
 
-        for (int i = 0; i < 30; ++i) {
-            mAdapter.add(0xff000000 + mRandom.nextInt(0xffffff));
+        mAdapter.addAll(getRandomData(MAX_ITEMS));
+    }
+
+    private List<Integer> getRandomData(int max) {
+        int count = mRandom.nextInt(max) + 1;
+        ArrayList<Integer> data = new ArrayList<>(count);
+
+        while (count --> 0) {
+            data.add(getRandomColor());
         }
+
+        return data;
+    }
+
+    private int getRandomColor() {
+        return 0xff000000 + mRandom.nextInt(0xffffff);
     }
 
     @Override
@@ -68,6 +83,18 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_swap:
                 mAdapter.swap(mLayoutManager.findFirstVisibleItemPosition(), mLayoutManager.findLastCompletelyVisibleItemPosition());
+                return true;
+
+            case R.id.action_set_reset:
+                mAdapter.set(getRandomData(MAX_ITEMS), RecyclerViewListAdapter.UpdateStrategy.RESET);
+                return true;
+
+            case R.id.action_set_update_all:
+                mAdapter.set(getRandomData(MAX_ITEMS), RecyclerViewListAdapter.UpdateStrategy.UPDATE_ALL);
+                return true;
+
+            case R.id.action_set_update_changed:
+                mAdapter.set(getRandomData(MAX_ITEMS), RecyclerViewListAdapter.UpdateStrategy.UPDATE_CHANGED);
                 return true;
 
             default:

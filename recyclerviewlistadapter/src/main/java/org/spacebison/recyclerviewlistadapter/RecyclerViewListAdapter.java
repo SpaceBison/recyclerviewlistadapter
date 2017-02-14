@@ -22,6 +22,7 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T>
     private final LinkedList<T> mData = new LinkedList<>();
     private OnItemClickListener<T, V> mOnItemClickListener;
     private OnItemLongClickListener<T, V> mOnItemLongClickListener;
+    private UpdateStrategy mUpdateStrategy = UpdateStrategy.UPDATE_ALL;
 
     /**
      * Returns the element represented by the passed view holder.
@@ -71,6 +72,26 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T>
     @Override
     public int getItemCount() {
         return size();
+    }
+
+    @UiThread
+    public void set(List<T> items) {
+        set(items, mUpdateStrategy);
+    }
+
+    @UiThread
+    public void set(List<T> items, UpdateStrategy updateStrategy) {
+        switch (updateStrategy) {
+            case RESET:
+                setReset(items);
+                break;
+            case UPDATE_ALL:
+                setUpdateAll(items);
+                break;
+            case UPDATE_CHANGED:
+                setUpdateChanged(items);
+                break;
+        }
     }
 
     /**
@@ -287,11 +308,36 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T>
     }
 
     @UiThread
-    private void setItemsUpdateChanged(List<T> items) {
+    private void setReset(List<T> items) {
+        mData.clear();
+        mData.addAll(items);
+        notifyDataSetChanged();
+    }
+
+    private void setUpdateAll(List<T> items) {
         final int oldSize = mData.size();
         final int newSize = items.size();
         final int sizeDiff = newSize - oldSize;
-        int changed = Math.min(oldSize, newSize);
+        final int changed = Math.min(oldSize, newSize);
+
+        mData.clear();
+        mData.addAll(items);
+
+        notifyItemRangeChanged(0, changed);
+
+        if (sizeDiff >= 0) {
+            notifyItemRangeInserted(oldSize, sizeDiff);
+        } else {
+            notifyItemRangeRemoved(newSize, -sizeDiff);
+        }
+    }
+
+    @UiThread
+    private void setUpdateChanged(List<T> items) {
+        final int oldSize = mData.size();
+        final int newSize = items.size();
+        final int sizeDiff = newSize - oldSize;
+        final int changed = Math.min(oldSize, newSize);
 
         final HashSet<Integer> changedItems = new HashSet<>(changed);
         for (int i = 0; i < changed; ++i) {
@@ -303,15 +349,21 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T>
         mData.clear();
         mData.addAll(items);
 
+        for (Integer changedItem : changedItems) {
+            notifyItemChanged(changedItem);
+        }
+
         if (sizeDiff >= 0) {
             notifyItemRangeInserted(oldSize, sizeDiff);
         } else {
             notifyItemRangeRemoved(newSize, -sizeDiff);
         }
+    }
 
-        for (Integer changedItem : changedItems) {
-            notifyItemChanged(changedItem);
-        }
+    public enum UpdateStrategy {
+        RESET,
+        UPDATE_ALL,
+        UPDATE_CHANGED;
     }
 
     private class AdapterIterator implements ListIterator<T> {

@@ -3,4 +3,16 @@
     <item
         android:id="@+id/action_swap"
         android:title="Swap"/>
+
+    <item
+        android:id="@+id/action_set_reset"
+        android:title="Set (reset)"/>
+
+    <item
+        android:id="@+id/action_set_update_changed"
+        android:title="Set (update changed)"/>
+
+    <item
+        android:id="@+id/action_set_update_all"
+        android:title="Set (update_all)"/>
 </menu>
