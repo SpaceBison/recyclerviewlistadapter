@@ -82,7 +82,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_swap:
-                mAdapter.swap(mLayoutManager.findFirstVisibleItemPosition(), mLayoutManager.findLastCompletelyVisibleItemPosition());
+                int first = mLayoutManager.findFirstVisibleItemPosition();
+                int last = mLayoutManager.findLastCompletelyVisibleItemPosition();
+                int offset = (last - first) / 3;
+                mAdapter.swap(first + offset, last - offset);
                 return true;
 
             case R.id.action_set_reset:
