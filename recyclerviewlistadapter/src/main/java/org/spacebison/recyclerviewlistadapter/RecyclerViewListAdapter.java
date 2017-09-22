@@ -258,7 +258,7 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T>
     @UiThread
     @Override
     public T remove(int i) {
-        final T removed = mData.remove();
+        final T removed = mData.remove(i);
         notifyItemRemoved(i);
         return removed;
     }
