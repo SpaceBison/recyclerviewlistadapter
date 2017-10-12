@@ -424,7 +424,7 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T>
         @Override
         public void add(T t) {
             mDelegate.add(t);
-            notifyItemInserted(mCurrentIndex);
+            notifyItemInserted(mDelegate.nextIndex());
         }
     }
 }
