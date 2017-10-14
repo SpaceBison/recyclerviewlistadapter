@@ -387,12 +387,12 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T>
 
         @Override
         public boolean hasPrevious() {
-            mCurrentIndex = previousIndex();
             return mDelegate.hasPrevious();
         }
 
         @Override
         public T previous() {
+            mCurrentIndex = previousIndex();
             return mDelegate.previous();
         }
 
@@ -424,7 +424,7 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T>
         @Override
         public void add(T t) {
             mDelegate.add(t);
-            notifyItemInserted(mCurrentIndex);
+            notifyItemInserted(mDelegate.nextIndex());
         }
     }
 }
