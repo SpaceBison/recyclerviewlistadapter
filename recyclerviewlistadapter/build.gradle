@@ -29,6 +29,12 @@ dependencies {
     testCompile group: 'com.google.guava', name: 'guava-testlib', version: '23.2-android'
 }
 
+tasks.withType(Test) {
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
 // build a jar with source files
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
