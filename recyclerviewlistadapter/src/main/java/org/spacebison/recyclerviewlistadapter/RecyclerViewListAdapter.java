@@ -148,9 +148,9 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T>
     @UiThread
     @Override
     public boolean add(T t) {
-        mData.add(t);
+        boolean modified = mData.add(t);
         notifyItemInserted(mData.size() - 1);
-        return true;
+        return modified;
     }
 
     @UiThread
@@ -176,17 +176,17 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T>
     @Override
     public boolean addAll(@NonNull Collection<? extends T> collection) {
         final int oldSize = mData.size();
-        mData.addAll(collection);
+        boolean modified = mData.addAll(collection);
         notifyItemRangeInserted(oldSize, collection.size());
-        return true;
+        return modified;
     }
 
     @UiThread
     @Override
     public boolean addAll(int i, @NonNull Collection<? extends T> collection) {
-        mData.addAll(i, collection);
+        boolean modified = mData.addAll(i, collection);
         notifyItemRangeInserted(i, collection.size());
-        return true;
+        return modified;
     }
 
     @UiThread
