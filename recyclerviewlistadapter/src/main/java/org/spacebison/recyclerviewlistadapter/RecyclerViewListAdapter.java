@@ -427,5 +427,16 @@ public abstract class RecyclerViewListAdapter<T, V extends BindableViewHolder<T>
             notifyItemInserted(mDelegate.nextIndex());
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof List && mData.equals(o);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return mData.hashCode();
+    }
 }
 
