@@ -10,17 +10,20 @@ import com.google.common.collect.testing.features.CollectionFeature;
 import com.google.common.collect.testing.features.CollectionSize;
 import com.google.common.collect.testing.features.ListFeature;
 
-import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.AllTests;
 
 import java.util.List;
 
+@RunWith(AllTests.class)
 public class RecyclerViewListAdapterListTest {
-    public static Test suite() {
+    public static TestSuite suite() {
         return new RecyclerViewListAdapterListTest().allTests();
     }
 
-    public Test allTests() {
+    public TestSuite allTests() {
         TestSuite suite =
                 new TestSuite(RecyclerViewListAdapterListTest.class.getCanonicalName());
         suite.addTest(ListTestSuiteBuilder
