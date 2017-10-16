@@ -12,20 +12,17 @@ Download
 ----------
 
 ```groovy
-
     allprojects {
-		repositories {
-			maven { url 'https://jitpack.io' }
-		}
-	}
-
+        repositories {
+            maven { url 'https://jitpack.io' }
+        }
+    }
 ```
 
 ```groovy
-
-	dependencies {
-		compile 'com.github.SpaceBison:recyclerviewlistadapter:0.3'
-	}
+    dependencies {
+        compile 'com.github.SpaceBison:recyclerviewlistadapter:0.3'
+    }
 
 ```
 
