@@ -21,7 +21,7 @@ Download
 
 ```groovy
     dependencies {
-        compile 'com.github.SpaceBison:recyclerviewlistadapter:0.3'
+        compile 'com.github.SpaceBison:recyclerviewlistadapter:0.4.2'
     }
 
 ```
