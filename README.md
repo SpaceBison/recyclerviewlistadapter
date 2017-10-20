@@ -1,6 +1,6 @@
 # RecyclerViewListAdapter
 
-[![Release](https://jitpack.io/v/SpaceBison/recyclerviewlistadapter.svg)](https://jitpack.io/#SpaceBison/recyclerviewlistadapter) [![Build Status](https://travis-ci.org/SpaceBison/recyclerviewlistadapter.svg?branch=master)](https://travis-ci.org/SpaceBison/recyclerviewlistadapter)
+[![Release](https://jitpack.io/v/SpaceBison/recyclerviewlistadapter.svg)](https://jitpack.io/#SpaceBison/recyclerviewlistadapter) [![Build Status](https://travis-ci.org/SpaceBison/recyclerviewlistadapter.svg?branch=master)](https://travis-ci.org/SpaceBison/recyclerviewlistadapter) [![Known Vulnerabilities](https://snyk.io/test/github/spacebison/recyclerviewlistadapter/badge.svg)](https://snyk.io/test/github/spacebison/recyclerviewlistadapter)
 
 RecyclerView.Adapter subclass that implements java.util.List and provides a simple click and
 long click callback interface.
